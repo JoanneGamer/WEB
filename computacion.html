@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mundo de la Computación</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f0f2f5;
+      --surface: #ffffff;
+      --surface2: #e8edf3;
+      --border: #c8d0dc;
+      --accent: #185FA5;
+      --accent-dark: #042C53;
+      --accent-light: #E6F1FB;
+      --text: #1a1f2e;
+      --text-muted: #5a6375;
+      --green: #27500A;
+      --green-bg: #EAF3DE;
+      --purple: #3C3489;
+      --purple-bg: #EEEDFE;
+      --amber: #633806;
+      --amber-bg: #FAEEDA;
+      --radius: 10px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* HERO */
+    .hero {
+      background: var(--accent-dark);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .hero-icon {
+      font-size: 56px;
+      color: #85B7EB;
+      flex-shrink: 0;
+    }
+    .hero h1 {
+      font-size: 26px;
+      font-weight: 500;
+      color: #E6F1FB;
+      margin-bottom: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .hero p {
+      font-size: 14px;
+      color: #85B7EB;
+      line-height: 1.6;
+    }
+    .hero-tip {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #378ADD;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* SECTION LABEL */
+    .section-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin: 2rem 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 0.5px;
+      background: var(--border);
+    }
+
+    /* CARDS GRID */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 1rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1rem;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.1s;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .card:active { transform: translateY(0); }
+
+    .card-icon {
+      font-size: 26px;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .card h3 {
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .card p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-top: 4px;
+      font-weight: 400;
+    }
+    .b-blue  { background: var(--accent-light); color: #0C447C; }
+    .b-green { background: var(--green-bg);     color: var(--green); }
+    .b-purple{ background: var(--purple-bg);    color: var(--purple); }
+    .b-amber { background: var(--amber-bg);     color: var(--amber); }
+
+    .btn-open {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      border: 0.5px solid var(--border);
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      margin-top: 6px;
+      transition: background 0.12s;
+    }
+    .btn-open:hover { background: var(--accent-light); }
+
+    /* MODAL OVERLAY */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 44, 83, 0.6);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .overlay.active { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 500px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: popIn 0.18s ease;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.95) translateY(8px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-header {
+      background: var(--accent-dark);
+      color: #E6F1FB;
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .modal-header h2 {
+      font-size: 15px;
+      font-weight: 500;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: #85B7EB;
+      font-size: 22px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: color 0.1s;
+    }
+    .modal-close:hover { color: #fff; }
+
+    .modal-body {
+      padding: 1.25rem;
+      overflow-y: auto;
+    }
+
+    .info-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-top: 0.5px solid var(--surface2);
+    }
+    .info-row:first-child { border-top: none; padding-top: 0; }
+    .info-row-icon {
+      font-size: 20px;
+      color: var(--accent);
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+    .info-row-text h4 {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .info-row-text p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .info-row-text ul {
+      font-size: 13px;
+      color: var(--text-muted);
+      padding-left: 1.1rem;
+      line-height: 1.9;
+    }
+
+    /* FOOTER */
+    .footer {
+      margin-top: 2.5rem;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="hero">
+    <i class="ti ti-device-desktop hero-icon"></i>
+    <div>
+      <h1>Mundo de la computación</h1>
+      <p>Explora los conceptos fundamentales de la informática.<br>Navega por hardware, software, redes y seguridad.</p>
+      <div class="hero-tip"><i class="ti ti-hand-click"></i> Haz clic en cualquier tarjeta para ver información detallada.</div>
+    </div>
+  </div>
+
+  <div class="section-label"><i class="ti ti-cpu" style="font-size:14px"></i> Hardware</div>
+  <div class="cards">
+    <div class="card" onclick="openModal('cpu')">
+      <i class="ti ti-cpu card-icon"></i>
+      <h3>CPU</h3>
+      <p>Unidad central de procesamiento. El cerebro de la computadora.</p>
+      <span class="badge b-blue">Hardware</span>
+      <button class="btn-open"><i class="ti ti-info-circle"></i> Ver más</button>
+    </div>
+    <div class="card" onclick="openModal('ram')">
+      <i class="ti ti-server card-icon"></i>
+      <h3>Memoria RAM</h3>
+      <p>Almacenamiento temporal que usa el sistema mientras trabaja.</p>
+      <span class="badge b-blue">Hardware</span>
+      <button class="btn-open"><i class="ti ti-info-circle"></i> Ver más</button>
+    </div>
+    <div class="card" onclick="openModal('disco')">
+      <i class="ti ti-database card-icon"></i>
+      <h3>Almacenamiento</h3>
+      <p>HDD, SSD y NVMe. Guarda datos de forma permanente.</p>
+      <span class="badge b-blue">Hardware</span>
+      <button class="btn-open"><i class="ti ti-info-circle"></i> Ver más</button>
+    </div>
+    <div class="card" onclick="openModal('gpu')">
+      <i class="ti ti-brand-nvidia card-icon"></i>
+      <h3>GPU</h3>
+      <p>Tarjeta gráfica. Procesa imágenes, video e inteligencia artificial.</p>
+      <span class="badge b-blue">Hardware</span>
+      <button class="btn-open"><i class="ti ti-info-circle"></i> Ver más</button>
+    </div>
+  </div>
+
+  <div class="section-label"><i class="ti ti-terminal" style="font-size:14px"></i> Software</div>
+  <div class="cards">
+    <div class="card" onclick="openModal('so')">
+      <i class="ti ti-brand-windows card-icon" style="color:#3B6D11"></i>
+      <h3>Sistema operativo</h3>
+      <p>Software que administra el hardware y los programas del sistema.</p>
+      <span class="badge b-green">Software</span>
+      <button class="btn-open"><i class="ti ti-info-circle"></i> Ver más</button>
+    </div>
+    <div class="card" onclick="openModal('prog')">
+      <i class="ti ti-code card-icon" style="color:#3B6D11"></i>
+      <h3>Programación</h3>
+      <p>Lenguajes para crear instrucciones que entienden las máquinas.</p>
+      <span class="badge b-green">Software</span>
+      <button class="btn-open"><i class="ti ti-info-circle"></i> Ver más</button>
+    </div>
+    <div class="card" onclick="openModal('red')">
+      <i class="ti ti-network card-icon" style="color:#534AB7"></i>
+      <h3>Redes</h3>
+      <p>Conexión entre dispositivos para compartir información.</p>
+      <span class="badge b-purple">Redes</span>
+      <button class="btn-open"><i class="ti ti-info-circle"></i> Ver más</button>
+    </div>
+    <div class="card" onclick="openModal('seg')">
+      <i class="ti ti-shield-lock card-icon" style="color:#854F0B"></i>
+      <h3>Ciberseguridad</h3>
+      <p>Protección de sistemas, redes y datos digitales.</p>
+      <span class="badge b-amber">Seguridad</span>
+      <button class="btn-open"><i class="ti ti-info-circle"></i> Ver más</button>
+    </div>
+  </div>
+
+  <div class="section-label"><i class="ti ti-device-laptop" style="font-size:14px"></i> Conceptos avanzados</div>
+  <div class="cards">
+    <div class="card" onclick="openModal('ia')">
+      <i class="ti ti-brain card-icon" style="color:#534AB7"></i>
+      <h3>Inteligencia artificial</h3>
+      <p>Sistemas que aprenden y toman decisiones de forma autónoma.</p>
+      <span class="badge b-purple">IA / ML</span>
+      <button class="btn-open"><i class="ti ti-info-circle"></i> Ver más</button>
+    </div>
+    <div class="card" onclick="openModal('nube')">
+      <i class="ti ti-cloud card-icon" style="color:#185FA5"></i>
+      <h3>Computación en la nube</h3>
+      <p>Servicios y recursos informáticos entregados por internet.</p>
+      <span class="badge b-blue">Cloud</span>
+      <button class="btn-open"><i class="ti ti-info-circle"></i> Ver más</button>
+    </div>
+    <div class="card" onclick="openModal('bd')">
+      <i class="ti ti-table card-icon" style="color:#3B6D11"></i>
+      <h3>Bases de datos</h3>
+      <p>Sistemas para almacenar, organizar y consultar información.</p>
+      <span class="badge b-green">Datos</span>
+      <button class="btn-open"><i class="ti ti-info-circle"></i> Ver más</button>
+    </div>
+    <div class="card" onclick="openModal('bin')">
+      <i class="ti ti-binary card-icon" style="color:#854F0B"></i>
+      <h3>Sistema binario</h3>
+      <p>Base del lenguaje de las computadoras: solo 0s y 1s.</p>
+      <span class="badge b-amber">Fundamentos</span>
+      <button class="btn-open"><i class="ti ti-info-circle"></i> Ver más</button>
+    </div>
+  </div>
+
+  <div class="footer">Página informativa de computación &mdash; Abre localmente en cualquier navegador</div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2 id="modal-title"></h2>
+      <button class="modal-close" onclick="closeModal()" aria-label="Cerrar"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const row = (icon, title, content) => `
+  <div class="info-row">
+    <i class="ti ti-${icon} info-row-icon"></i>
+    <div class="info-row-text"><h4>${title}</h4>${content}</div>
+  </div>`;
+
+const p = t => `<p>${t}</p>`;
+const ul = items => `<ul>${items.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+
+const data = {
+  cpu: { title: 'CPU — Unidad central de procesamiento', body:
+    row('info-circle','¿Qué es?', p('El CPU ejecuta las instrucciones de los programas. Realiza operaciones aritméticas, lógicas y de control. Es el componente más importante de cualquier computadora.')) +
+    row('list','Componentes internos', ul(['Unidad de control (CU)','Unidad aritmético-lógica (ALU)','Registros internos','Caché L1, L2 y L3'])) +
+    row('chart-bar','Métricas clave', p('Se mide en GHz (velocidad de reloj), número de núcleos y threads. A mayor núcleos, mejor multitarea y rendimiento paralelo.')) +
+    row('cpu','Fabricantes principales', p('Intel (Core i3/i5/i7/i9) y AMD (Ryzen 3/5/7/9) dominan el mercado. Apple fabrica sus propios chips M-series para Mac.'))
+  },
+  ram: { title: 'Memoria RAM', body:
+    row('info-circle','¿Qué es?', p('RAM (Random Access Memory) almacena temporalmente los datos que el CPU necesita de inmediato. Al apagar la computadora, su contenido se pierde.')) +
+    row('timeline','Tipos de RAM', ul(['DDR4 — estándar actual en la mayoría de PCs','DDR5 — más rápida, nueva generación','LPDDR — bajo consumo para laptops y móviles','ECC RAM — con corrección de errores, para servidores'])) +
+    row('ruler','¿Cuánta necesito?', p('8 GB para uso básico, 16 GB para multitarea fluida, 32 GB+ para edición de video, diseño 3D o desarrollo de software intenso.')) +
+    row('bolt','Velocidad', p('Se mide en MHz/MT/s. DDR4 va de 2133 a 3600 MHz; DDR5 comienza en 4800 MT/s. Mayor frecuencia = mayor ancho de banda.'))
+  },
+  disco: { title: 'Almacenamiento: HDD, SSD y NVMe', body:
+    row('device-floppy','HDD (Disco duro mecánico)', p('Usa platos magnéticos giratorios. Alta capacidad y costo bajo, pero más lento y frágil ante golpes. Velocidad típica: ~120 MB/s.')) +
+    row('bolt','SSD (Estado sólido SATA)', p('Sin partes móviles, mucho más rápido y resistente que el HDD. Ideal para el sistema operativo. Velocidad: ~550 MB/s.')) +
+    row('rocket','NVMe (M.2 PCIe)', p('La opción más rápida disponible. Se conecta directo a la placa madre. Gen 3: ~3,500 MB/s. Gen 4: ~7,000 MB/s.')) +
+    row('cloud','Almacenamiento en la nube', p('Google Drive, OneDrive y Dropbox ofrecen almacenamiento remoto accesible desde cualquier dispositivo con internet.'))
+  },
+  gpu: { title: 'GPU — Tarjeta gráfica', body:
+    row('info-circle','¿Qué es?', p('La GPU (Graphics Processing Unit) procesa miles de operaciones en paralelo. Originalmente diseñada para gráficos, hoy también impulsa la IA y la ciencia de datos.')) +
+    row('list','Usos principales', ul(['Videojuegos y renderizado en tiempo real','Edición de video y diseño gráfico','Machine Learning e IA (CUDA, Tensor Cores)','Minería de criptomonedas'])) +
+    row('brand-nvidia','Fabricantes', p('NVIDIA (GeForce RTX) y AMD (Radeon RX) lideran el mercado. Intel tiene sus GPU Arc. NVIDIA domina el segmento de IA con sus GPUs H100.')) +
+    row('chart-bar','VRAM', p('La memoria de la GPU (VRAM) determina qué tan grandes son las texturas y modelos que puede manejar. Para gaming 4K se recomiendan 12 GB o más.'))
+  },
+  so: { title: 'Sistema operativo', body:
+    row('info-circle','¿Qué es?', p('El SO gestiona el hardware, la memoria, los procesos y permite que las aplicaciones funcionen. Es la capa intermedia entre el usuario y el hardware.')) +
+    row('apps','Los más usados', ul(['Windows — el más popular en escritorio (72% del mercado)','macOS — exclusivo de Apple, reconocido por su estabilidad','Linux — código abierto, preferido en servidores y desarrollo','Android / iOS — sistemas para dispositivos móviles'])) +
+    row('settings','Funciones clave', p('Administra procesos, memoria RAM, sistema de archivos, permisos, seguridad y comunicación entre hardware y software.')) +
+    row('terminal','Kernel', p('El kernel es el núcleo del SO. Se comunica directamente con el hardware. Linux y Windows NT tienen kernels muy diferentes en arquitectura.'))
+  },
+  prog: { title: 'Lenguajes de programación', body:
+    row('code','¿Qué son?', p('Son idiomas formales con los que los humanos escriben instrucciones que las computadoras pueden entender y ejecutar, ya sea directamente o tras compilarse.')) +
+    row('list','Lenguajes populares', ul(['Python — ciencia de datos, IA, automatización','JavaScript — web frontend y backend (Node.js)','C / C++ — sistemas operativos y videojuegos','Java — apps empresariales y Android','SQL — consultas en bases de datos relacionales','Rust — sistemas seguros y de alto rendimiento'])) +
+    row('layers-intersect','Compilados vs interpretados', p('Compilados (C, Rust): se traducen a código máquina antes de ejecutarse. Interpretados (Python, JS): se ejecutan línea por línea en tiempo real.')) +
+    row('git-branch','Control de versiones', p('Git es el estándar para controlar cambios en código. GitHub y GitLab son plataformas para colaborar en proyectos de programación.'))
+  },
+  red: { title: 'Redes informáticas', body:
+    row('network','¿Qué es una red?', p('Una red conecta dos o más dispositivos para compartir recursos e información, ya sea por cable (Ethernet) o de forma inalámbrica (Wi-Fi, Bluetooth).')) +
+    row('topology-star','Tipos de red', ul(['LAN — red de área local (hogar u oficina)','WAN — área amplia (Internet es la WAN más grande)','MAN — área metropolitana (una ciudad)','VPN — red privada virtual sobre internet'])) +
+    row('router','Dispositivos clave', p('Router (enruta tráfico entre redes), switch (conecta dispositivos en LAN), módem (conecta al ISP) y access point (extiende Wi-Fi).')) +
+    row('lock','Protocolos', p('TCP/IP es la base de internet. HTTP/HTTPS para web, FTP para archivos, SMTP para email, DNS para traducir nombres de dominio a IPs.'))
+  },
+  seg: { title: 'Ciberseguridad', body:
+    row('shield-lock','¿Qué es?', p('La ciberseguridad protege sistemas, redes y datos digitales contra ataques, accesos no autorizados, daños y robo de información.')) +
+    row('bug','Amenazas comunes', ul(['Malware — virus, troyanos, ransomware, spyware','Phishing — engaños para robar credenciales','DDoS — ataques que saturan servidores','SQL Injection — inyección de código en bases de datos','Man-in-the-middle — interceptación de comunicaciones'])) +
+    row('lock','Buenas prácticas', p('Usar contraseñas fuertes y únicas, activar autenticación de dos factores (2FA), mantener software actualizado y no abrir enlaces sospechosos.')) +
+    row('shield-check','Herramientas', p('Antivirus, firewalls, VPNs, gestores de contraseñas (Bitwarden, 1Password) y soluciones EDR para empresas.'))
+  },
+  ia: { title: 'Inteligencia artificial', body:
+    row('brain','¿Qué es?', p('La IA permite que las máquinas aprendan de datos, reconozcan patrones y tomen decisiones sin ser programadas explícitamente para cada caso.')) +
+    row('list','Ramas principales', ul(['Machine Learning — aprendizaje automático con datos','Deep Learning — redes neuronales profundas','NLP — procesamiento de lenguaje natural (ChatGPT, etc.)','Computer Vision — reconocimiento de imágenes y video','Robótica — sistemas físicos autónomos'])) +
+    row('chart-bar','Aplicaciones reales', p('Diagnóstico médico, autos autónomos, recomendaciones de Netflix/Spotify, asistentes de voz, traducción automática y detección de fraudes.')) +
+    row('school','Herramientas populares', p('TensorFlow y PyTorch para modelos. Scikit-learn para ML clásico. Hugging Face para modelos de lenguaje preentrenados.'))
+  },
+  nube: { title: 'Computación en la nube', body:
+    row('cloud','¿Qué es?', p('La nube ofrece recursos informáticos (servidores, almacenamiento, bases de datos, software) a través de internet, bajo demanda y pago por uso.')) +
+    row('list','Modelos de servicio', ul(['IaaS — infraestructura como servicio (servidores virtuales)','PaaS — plataforma como servicio (entorno de desarrollo)','SaaS — software como servicio (Google Docs, Office 365)','FaaS — funciones como servicio (serverless)'])) +
+    row('building','Proveedores principales', p('AWS (Amazon), Azure (Microsoft) y Google Cloud dominan el mercado con más del 65% de cuota global combinada.')) +
+    row('check','Ventajas', p('Escalabilidad inmediata, pago por uso, alta disponibilidad, respaldo automático y acceso desde cualquier lugar del mundo.'))
+  },
+  bd: { title: 'Bases de datos', body:
+    row('table','¿Qué son?', p('Son sistemas organizados para almacenar, gestionar y recuperar información de forma eficiente. Son el núcleo de casi cualquier aplicación moderna.')) +
+    row('list','Tipos principales', ul(['Relacionales (SQL) — tablas con filas y columnas. Ej: MySQL, PostgreSQL, SQL Server','No relacionales (NoSQL) — documentos, clave-valor, grafos. Ej: MongoDB, Redis, Cassandra','En memoria — ultra-rápidas. Ej: Redis, Memcached'])) +
+    row('code','Lenguaje SQL', p('SQL (Structured Query Language) se usa para consultar bases relacionales. SELECT, INSERT, UPDATE y DELETE son sus comandos básicos.')) +
+    row('chart-bar','Conceptos clave', p('ACID (Atomicidad, Consistencia, Aislamiento, Durabilidad), índices para búsquedas rápidas, transacciones y normalización de datos.'))
+  },
+  bin: { title: 'Sistema binario y fundamentos digitales', body:
+    row('binary','¿Qué es el sistema binario?', p('Las computadoras solo entienden dos estados eléctricos: encendido (1) y apagado (0). Todo — texto, imágenes, video — se representa como secuencias de 0s y 1s.')) +
+    row('list','Unidades de información', ul(['1 bit — mínima unidad (0 o 1)','8 bits = 1 byte','1,024 bytes = 1 Kilobyte (KB)','1,024 KB = 1 Megabyte (MB)','1,024 MB = 1 Gigabyte (GB)','1,024 GB = 1 Terabyte (TB)'])) +
+    row('math-function','Conversión', p('El número decimal 10 en binario es 1010. El decimal 255 es 11111111 en binario, que en hexadecimal es FF. Los colores web usan hexadecimal (#FF5733).')) +
+    row('circuit-ground','Compuertas lógicas', p('AND, OR, NOT, NAND y XOR son las operaciones básicas. A partir de ellas se construyen todos los circuitos de una computadora.'))
+  }
+};
+
+function openModal(key) {
+  const d = data[key];
+  document.getElementById('modal-title').textContent = d.title;
+  document.getElementById('modal-body').innerHTML = d.body;
+  document.getElementById('overlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('overlay')) {
+    document.getElementById('overlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>
